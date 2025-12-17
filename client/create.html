@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать проект - ProjectMarket</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">ProjectMarket</a>
+                <a href="/" class="btn btn-secondary">На главную</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <h1 class="page-title">Создать новый проект</h1>
+        
+        <div id="error-container" class="error" style="display: none;"></div>
+        <div id="success-container" class="success-message" style="display: none;">
+            Проект успешно создан! Перенаправление на главную страницу...
+        </div>
+        
+        <div class="form-container">
+            <form id="project-form">
+                <div class="form-group">
+                    <label for="project-name" class="form-label required">Название проекта</label>
+                    <input type="text" id="project-name" class="form-input" placeholder="Введите название вашего проекта" required>
+                    <div class="form-hint">Краткое и понятное название, отражающее суть проекта</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-tagline" class="form-label required">Краткое описание</label>
+                    <input type="text" id="project-tagline" class="form-input" placeholder="Например: Мобильное приложение для заказа такси" required>
+                    <div class="form-hint">Это описание будет отображаться на карточке проекта</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-description" class="form-label required">Подробное описание проекта</label>
+                    <textarea id="project-description" class="form-textarea" placeholder="Опишите детали вашего проекта: цели, функции, технологии и т.д." required></textarea>
+                    <div class="form-hint">Чем подробнее описание, тем больше шансов найти покупателя</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-image" class="form-label">Изображение проекта</label>
+                    <div class="file-input-container">
+                        <label for="project-image" class="file-input-label">
+                            <div class="file-input-text">
+                                <span>Нажмите для загрузки изображения</span> или перетащите файл сюда
+                            </div>
+                            <input type="file" id="project-image" class="file-input" accept="image/*">
+                        </label>
+                    </div>
+                    <div class="form-hint">Рекомендуемый размер: не менее 800x400px. Форматы: JPG, PNG, GIF. Максимальный размер: 5MB</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-city" class="form-label required">Город</label>
+                    <input type="text" id="project-city" class="form-input" placeholder="Начните вводить название города" list="cities-list" required>
+                    <datalist id="cities-list">
+                        <!-- Города загружаются через JS -->
+                    </datalist>
+                    <div class="form-hint">Введите город в России</div>
+                    <div id="city-validation"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-price" class="form-label required">Стоимость проекта</label>
+                    <div style="position: relative;">
+                        <input type="number" id="project-price" class="form-input" placeholder="Введите стоимость в рублях" required min="0" step="1">
+                        <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666;">₽</div>
+                    </div>
+                    <div class="form-hint">Укажите реальную стоимость проекта</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">Контактная информация</label>
+                    <div class="form-hint">Укажите хотя бы один способ связи</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label for="project-phone" class="form-label">Телефон</label>
+                            <input type="tel" id="project-phone" class="form-input phone-input" placeholder="+7 (999) 123-45-67">
+                            <div class="form-hint small">Формат: +7 XXX XXX-XX-XX</div>
+                        </div>
+                        <div>
+                            <label for="project-email" class="form-label">Email</label>
+                            <input type="email" id="project-email" class="form-input" placeholder="example@mail.ru">
+                            <div class="form-hint small">Например: user@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label for="project-telegram" class="form-label">Telegram</label>
+                            <input type="text" id="project-telegram" class="form-input" placeholder="@username">
+                            <div class="form-hint small">Формат: @username</div>
+                        </div>
+                        <div>
+                            <label for="project-other" class="form-label">Другие контакты</label>
+                            <input type="text" id="project-other" class="form-input" placeholder="Skype, WhatsApp и т.д.">
+                            <div class="form-hint small">Любые другие способы связи</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="/" class="btn btn-secondary">Отмена</a>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">Опубликовать проект</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Платформа для покупки и продажи проектов в России</p>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('project-form');
+        const errorContainer = document.getElementById('error-container');
+        const successContainer = document.getElementById('success-container');
+        const submitBtn = document.getElementById('submit-btn');
+        const fileInputContainer = document.querySelector('.file-input-container');
+        const fileInput = document.getElementById('project-image');
+        const cityInput = document.getElementById('project-city');
+        const citiesDatalist = document.getElementById('cities-list');
+        const cityValidation = document.getElementById('city-validation');
+        
+        // Инициализация маски для телефона
+        initPhoneMask();
+        
+        // Таймер для отложенного поиска городов
+        let searchTimeout = null;
+        
+        // Загрузка популярных городов при фокусе
+        cityInput.addEventListener('focus', async function() {
+            if (this.value.trim() === '') {
+                const popularCities = await getPopularCities();
+                updateCitiesDatalist(popularCities);
+            }
+        });
+        
+        // Поиск городов с задержкой
+        cityInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            // Очищаем предыдущий таймер
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            
+            // Если поле пустое, показываем популярные города
+            if (query === '') {
+                getPopularCities().then(cities => {
+                    updateCitiesDatalist(cities);
+                });
+                return;
+            }
+            
+            // Если меньше 2 символов, не ищем
+            if (query.length < 2) {
+                citiesDatalist.innerHTML = '';
+                return;
+            }
+            
+            // Устанавливаем задержку для поиска (300ms)
+            searchTimeout = setTimeout(async () => {
+                const cities = await searchCities(query);
+                updateCitiesDatalist(cities);
+            }, 300);
+        });
+        
+        // Валидация города при потере фокуса
+        cityInput.addEventListener('blur', async function() {
+            const city = this.value.trim();
+            if (city) {
+                const validation = await validateCity(city);
+                showCityValidation(validation);
+            } else {
+                hideCityValidation();
+            }
+        });
+        
+        // Обновление валидации города
+        function showCityValidation(validation) {
+            cityValidation.innerHTML = '';
+            cityValidation.style.display = 'block';
+            
+            if (validation.isValid) {
+                cityValidation.innerHTML = `<div class="city-valid">✓ Город найден в списке</div>`;
+                cityInput.style.borderColor = '#27ae60';
+            } else {
+                let html = `<div class="city-invalid">⚠ Город не найден</div>`;
+                if (validation.suggestion) {
+                    html += `<div class="city-suggestion-text">Возможно, вы имели в виду: <strong>${validation.suggestion}</strong></div>`;
+                }
+                cityValidation.innerHTML = html;
+                cityInput.style.borderColor = '#e74c3c';
+            }
+        }
+        
+        function hideCityValidation() {
+            cityValidation.innerHTML = '';
+            cityValidation.style.display = 'none';
+            cityInput.style.borderColor = '#ddd';
+        }
+        
+        // Обработка загрузки изображения
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                const fileSize = this.files[0].size;
+                const maxSize = 5 * 1024 * 1024;
+                
+                if (fileSize > maxSize) {
+                    showError(errorContainer, 'Файл слишком большой. Максимальный размер 5MB');
+                    this.value = '';
+                    return;
+                }
+                
+                const fileInputText = document.querySelector('.file-input-text');
+                fileInputText.innerHTML = `<span>${fileName}</span>`;
+                fileInputContainer.style.borderColor = '#4a6ee0';
+                fileInputContainer.style.backgroundColor = '#f0f4ff';
+                hideError(errorContainer);
+            }
+        });
+        
+        // Обработка перетаскивания файла
+        fileInputContainer.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#4a6ee0';
+            this.style.backgroundColor = '#f0f4ff';
+        });
+        
+        fileInputContainer.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#ddd';
+            this.style.backgroundColor = 'transparent';
+        });
+        
+        fileInputContainer.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#4a6ee0';
+            this.style.backgroundColor = '#f0f4ff';
+            
+            if (e.dataTransfer.files.length) {
+                const file = e.dataTransfer.files[0];
+                const maxSize = 5 * 1024 * 1024;
+                
+                if (file.size > maxSize) {
+                    showError(errorContainer, 'Файл слишком большой. Максимальный размер 5MB');
+                    return;
+                }
+                
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        // Обработка отправки формы
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            hideError(errorContainer);
+            successContainer.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Создание...';
+            
+            try {
+                const formData = collectProjectFormData();
+                
+                // Валидация формы
+                const validationErrors = validateProjectForm(formData);
+                if (validationErrors.length > 0) {
+                    throw new Error(validationErrors.join('\n'));
+                }
+                
+                // Дополнительная валидация города
+                const cityValidation = await validateCity(formData.city);
+                if (!cityValidation.isValid) {
+                    throw new Error(`Город "${formData.city}" не найден. ${cityValidation.suggestion ? `Возможно, вы имели в виду: ${cityValidation.suggestion}` : ''}`);
+                }
+                
+                // Создание проекта
+                await createProject(formData);
+                
+                // Успешное создание
+                successContainer.style.display = 'block';
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+                
+            } catch (error) {
+                showError(errorContainer, error.message || 'Ошибка при создании проекта');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Опубликовать проект';
+            }
+        });
+    });
+</script>
+</body>
+</html>

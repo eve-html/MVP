@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectMarket - Главная</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">ProjectMarket</a>
+                <a href="/create" class="btn">Создать проект</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <h1 class="page-title">Проекты, доступные для покупки</h1>
+        
+        <div id="loading" class="loading">
+            <p>Загрузка проектов...</p>
+        </div>
+        
+        <div id="error-container" class="error" style="display: none;"></div>
+        
+        <div class="projects-grid" id="projects-container">
+            <!-- Проекты загружаются через JS -->
+        </div>
+        
+        <div id="no-projects" class="no-projects" style="display: none;">
+            <h2>Пока нет проектов</h2>
+            <p>Будьте первым, кто создаст проект!</p>
+            <a href="/create" class="btn" style="margin-top: 1rem;">Создать проект</a>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Платформа для покупки и продажи проектов в России</p>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const projectsContainer = document.getElementById('projects-container');
+            const loadingElement = document.getElementById('loading');
+            const noProjectsElement = document.getElementById('no-projects');
+            const errorContainer = document.getElementById('error-container');
+            
+            try {
+                const projects = await loadProjects();
+                
+                loadingElement.style.display = 'none';
+                
+                if (projects.length === 0) {
+                    noProjectsElement.style.display = 'block';
+                    return;
+                }
+                
+                projects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'project-card';
+                    
+                    const imageUrl = getImageUrl(project.image);
+                    
+                    projectCard.innerHTML = `
+                        <div class="project-image">
+                            ${imageUrl ? 
+                                `<img src="${imageUrl}" alt="${project.title}" style="width:100%; height:100%; object-fit:cover;">` : 
+                                `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background-color:#eef1f8; color:#888; font-size:1.2rem;">
+                                    Изображение не загружено
+                                </div>`
+                            }
+                        </div>
+                        <div class="project-info">
+                            <h3 class="project-title">
+                                <a href="/project.html?id=${project.id}" style="color: inherit; text-decoration: none;">
+                                    ${project.title}
+                                </a>
+                            </h3>
+                            <p class="project-tagline">${project.tagline}</p>
+                            <div class="project-price">${project.price.toLocaleString('ru-RU')} ₽</div>
+                            <div class="project-location">${project.city}, Россия</div>
+                            <p class="project-description">${project.description.substring(0, 150)}${project.description.length > 150 ? '...' : ''}</p>
+                            <div class="project-footer">
+                                <button class="contact-btn" onclick="showContact('${encodeURIComponent(project.contact)}')">
+                                    Связаться
+                                </button>
+                                <a href="/project.html?id=${project.id}" class="details-btn">
+                                    Подробнее
+                                </a>
+                                <span class="project-date">${formatDate(project.createdAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    projectsContainer.appendChild(projectCard);
+                });
+                
+            } catch (error) {
+                loadingElement.style.display = 'none';
+                showError(errorContainer, 'Ошибка загрузки проектов. Попробуйте обновить страницу.');
+                console.error('Ошибка загрузки проектов:', error);
+            }
+        });
+    </script>
+</body>
+</html>

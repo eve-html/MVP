@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали проекта - ProjectMarket</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">ProjectMarket</a>
+                <a href="/create" class="btn">Создать проект</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <a href="/" class="back-btn">← Назад к проектам</a>
+        
+        <div id="loading" class="loading">
+            <p>Загрузка проекта...</p>
+        </div>
+        
+        <div id="error-container" class="error" style="display: none;"></div>
+        
+        <div id="project-detail" class="project-detail" style="display: none;">
+            <!-- Данные загружаются через JS -->
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Платформа для покупки и продажи проектов в России</p>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id');
+            const projectContainer = document.getElementById('project-detail');
+            const loadingElement = document.getElementById('loading');
+            const errorContainer = document.getElementById('error-container');
+            
+            if (!projectId) {
+                showError(errorContainer, 'ID проекта не указан');
+                loadingElement.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const project = await getProjectById(projectId);
+                loadingElement.style.display = 'none';
+                displayProject(project);
+                
+            } catch (error) {
+                loadingElement.style.display = 'none';
+                showError(errorContainer, error.message || 'Ошибка загрузки проекта');
+            }
+        });
+        
+        function displayProject(project) {
+            const projectContainer = document.getElementById('project-detail');
+            const imageUrl = getImageUrl(project.image);
+            const contacts = parseContacts(project.contact);
+            
+            projectContainer.innerHTML = `
+                <div class="project-header">
+                    <h1 class="project-title-detail">${project.title}</h1>
+                    <p class="project-tagline">${project.tagline}</p>
+                    
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">📍</span>
+                            <span>${project.city}, Россия</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            <span>Опубликовано: ${formatDate(project.createdAt)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-price-detail">${project.price.toLocaleString('ru-RU')} ₽</div>
+                </div>
+                
+                ${imageUrl ? 
+                    `<img src="${imageUrl}" alt="${project.title}" class="project-image-large">` : 
+                    `<div class="no-image-placeholder-large">Изображение не загружено</div>`
+                }
+                
+                <div class="project-content">
+                    <div class="project-description-detail">
+                        <h2 class="section-title">Описание проекта</h2>
+                        <div class="description-text">${project.description.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h2 class="section-title">Контактная информация</h2>
+                        
+                        ${contacts.phone ? `
+                            <div class="contact-item">
+                                <span class="contact-label">Телефон:</span>
+                                <div class="contact-value">
+                                    <a href="tel:${contacts.phone.replace(/\D/g, '')}">${contacts.phone}</a>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${contacts.email ? `
+                            <div class="contact-item">
+                                <span class="contact-label">Email:</span>
+                                <div class="contact-value">
+                                    <a href="mailto:${contacts.email}">${contacts.email}</a>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${contacts.telegram ? `
+                            <div class="contact-item">
+                                <span class="contact-label">Telegram:</span>
+                                <div class="contact-value">
+                                    <a href="https://t.me/${contacts.telegram.replace('@', '')}" target="_blank">${contacts.telegram}</a>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${contacts.otherContact ? `
+                            <div class="contact-item">
+                                <span class="contact-label">Другие контакты:</span>
+                                <div class="contact-value">${contacts.otherContact}</div>
+                            </div>
+                        ` : ''}
+                        
+                        <button class="contact-btn-detail" onclick="showContact('${encodeURIComponent(project.contact)}')">Скопировать контакты</button>
+                    </div>
+                </div>
+            `;
+            
+            projectContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
